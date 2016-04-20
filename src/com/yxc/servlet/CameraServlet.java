@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,13 +66,13 @@ public class CameraServlet extends HttpServlet {
 	String img1=img.substring(22);
 	
 	byte [] b = decode.decodeBuffer(img1);
-	
+	System.out.println("接收到人脸");
 //	String imgFilePath = "C:/Users/yxc/Desktop/test22.png";// 新生成的图片
 //	OutputStream out = new FileOutputStream(imgFilePath);
 //	out.write(b);
 //	out.flush();
 //	out.close();
-//	
+	
 	List<Face> faces = null;
 	try {
 		faces=FaceDao.paraseFace(b);
@@ -78,10 +80,25 @@ public class CameraServlet extends HttpServlet {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+	
 	JSONArray jsonArray = new JSONArray();
+	if(faces.size()>0){
 	for(Face face :faces){
 		JSONObject jsonObject = new JSONObject();
 		try {
+			jsonObject.put("center_x", face.getCenter_x());
+			jsonObject.put("center_y", face.getCenter_y());
+			jsonObject.put("eye_left_x", face.getEye_left_x());
+			jsonObject.put("eye_left_y", face.getEye_left_y());
+			jsonObject.put("eye_right_x", face.getEye_right_x());
+			jsonObject.put("eye_right_y", face.getEye_right_y());
+			jsonObject.put("mouth_left_x", face.getMouth_left_x());
+			jsonObject.put("mouth_left_y", face.getMouth_left_y());
+			jsonObject.put("mouth_right_x", face.getMouth_right_x());
+			jsonObject.put("mouth_right_y", face.getMouth_right_y());
+			jsonObject.put("nose_x", face.getNose_x());
+			jsonObject.put("nose_y", face.getNose_y());
+			
 		jsonObject.put("age", face.getAge());
 		jsonObject.put("age_range", face.getAge_range());
 		jsonObject.put("gender", face.getGender());
@@ -93,13 +110,14 @@ public class CameraServlet extends HttpServlet {
 		jsonObject.put("pitch_angle", face.getPitch_angle());
 		jsonObject.put("yaw_angle", face.getYaw_angle());
 		
-			jsonObject.put("roll_angle", face.getRoll_angle());
+		jsonObject.put("roll_angle", face.getRoll_angle());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		jsonArray.put(jsonObject);
+	}
 	}
     response.setContentType("application/json");
     response.getWriter().write(jsonArray.toString());

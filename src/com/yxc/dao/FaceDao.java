@@ -24,15 +24,29 @@ public  static List<Face> paraseFace(byte[] img) throws JSONException, FaceppPar
 	
 	HttpRequests httpRequests = new HttpRequests(FaceDao.api_key,FaceDao.api_secret);
 	PostParameters postParameters=new PostParameters();
-//	postParameters.setImg(new File("images/1’’∆¨.jpg"));
+//	postParameters.setImg(new File("C:/Users/yxc/Desktop/test22.png"));
 	
 	postParameters.setImg(img);
 	postParameters.setAttribute("glass,pose,gender,age,race,smiling");
 	List<Face> faces=new ArrayList<Face>();
     JSONObject result=httpRequests.detectionDetect(postParameters);
+    System.out.println(result);
+    
     int length=result.getJSONArray("face").length();
     for(int i=0;i<length;i++){
     	Face face=new Face();
+    	face.setCenter_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("center").getDouble("x"));
+    	face.setCenter_y(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("center").getDouble("y"));
+    	face.setEye_left_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("eye_left").getDouble("x"));
+    	face.setEye_left_y(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("eye_left").getDouble("y"));
+    	face.setEye_right_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("eye_right").getDouble("x"));
+    	face.setEye_right_y(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("eye_right").getDouble("y"));
+    	face.setMouth_left_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("mouth_left").getDouble("x"));
+    	face.setMouth_left_y(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("mouth_left").getDouble("y"));
+    	face.setMouth_right_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("mouth_right").getDouble("x"));
+    	face.setMouth_right_y(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("mouth_right").getDouble("y"));
+    	face.setNose_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("nose").getDouble("x"));
+    	face.setNose_y(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("nose").getDouble("y"));
     	face.setAge(result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("age").getInt("value"));
     	face.setAge_range( result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("age").getInt("range"));
         face.setGender( result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("gender").getString("value"));

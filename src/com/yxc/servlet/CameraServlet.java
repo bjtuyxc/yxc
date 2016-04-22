@@ -11,16 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
-
-
-
-
-
-
-
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,8 +56,8 @@ public class CameraServlet extends HttpServlet {
 	String img1=img.substring(22);
 	
 	byte [] b = decode.decodeBuffer(img1);
-	System.out.println("接收到人脸");
-//	String imgFilePath = "C:/Users/yxc/Desktop/test22.png";// 新生成的图片
+//	System.out.println("接收到人脸");
+//	String imgFilePath = "C:/Users/lh/Desktop/test22.png";// 新生成的图片
 //	OutputStream out = new FileOutputStream(imgFilePath);
 //	out.write(b);
 //	out.flush();

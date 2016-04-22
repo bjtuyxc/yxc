@@ -291,12 +291,25 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="show-top-grids">
 			<div id="result"></div>
+			
+			<canvas id="canvas" width="640" height="480"></canvas>
 			<video id="video" width="640" height="480" autoplay="autoplay"></video>
-
-
+			
 <script type="text/javascript">
 	window.addEventListener("DOMContentLoaded", function() {
-		video = document.getElementById("video"),
+		
+		video = document.getElementById("video");
+		var offsettop=$("#video").offset().top;   
+		var offsetleft=$("#video").offset().left; 
+		
+		var canvas = document.getElementById("canvas");
+		canvas.style.position="absolute";
+		canvas.style.top=offsettop;
+		canvas.style.left=offsetleft;
+		context = canvas.getContext("2d");
+		/*video.style.position="absolute";
+		video.style.top="10px";
+		video.style.left="10px";*/
 		videoObj = { "video": true},
 		errBack = function(error) {
 			console.log("视频获取失败: ", error.code); 
@@ -326,12 +339,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 function draw()
 {
-	var canvas = document.createElement("canvas");
-	canvas.width = "640";
-	canvas.height = "480";
-	context = canvas.getContext("2d");
-	context.drawImage(video,0,0,640,480);
-	var image = canvas.toDataURL('image/png');
+	
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	var cav = document.createElement("canvas");
+	cav.width = 640;
+	cav.height = 480;
+	ctx = cav.getContext("2d");
+	//context.globalAlpha = 0.3;
+	//alert("hello");
+	//context.translate(0, 480);
+	///canvas.scale(1,-1);
+	ctx.drawImage(video,0,0,640,480);
+	var image = cav.toDataURL('image/png');
 	$.ajax({
         type: 'post',  
         url: '/FaceYxc/camera',  
@@ -347,9 +367,89 @@ function draw()
              		   new_table="<tr><td>"+i+"</td><td>"+data[i].age+"(+/-)"+data[i].age_range+"</td><td>"+data[i].gender+"</td><td>"+
              		   data[i].smile+"</td><td>"+data[i].glass+"</td><td>"+data[i].race+"</td><td>"+data[i].pitch_angle+"</td><td>"
              		   +data[i].yaw_angle+"</td><td>"+data[i].roll_angle+"</td>"
+             		 // var cav = document.getElementById("cav");
+             		 // cav.attr("width", $(window).get(0).innerWidth);
+             	     // cav.attr("height", $(window).get(0).innerHeight);
+             	     // context = cav.getContext("2d");
+             	     
+             		  context.beginPath();
+             		  a1 = (data[i].center_x) * 6.4;
+             		  b1 = (data[i].center_y) * 4.8;            		  
+             		  context.arc(a1,b1,5,0,360,false);
+             		  context.fillStyle="red";//填充颜色,默认是黑色
+             		  context.fill();//画实心圆
+             		  context.closePath();
+
+             		  context.beginPath();
+             		  a2 = (data[i].eye_left_x) * 6.4;
+            		  b2 = (data[i].eye_left_y) * 4.8;
+            		  context.arc(a2,b2,5,0,360,false);
+            		  context.fillStyle="red";//填充颜色,默认是黑色
+            		  context.fill();//画实心圆
+            		  context.closePath();
+            		  
+            		  context.beginPath();
+            		  a3 = (data[i].eye_right_x) * 6.4;
+            		  b3 = (data[i].eye_right_y) * 4.8;
+            		  context.arc(a3,b3,5,0,360,false);
+             		  context.fillStyle="red";//填充颜色,默认是黑色
+             		  context.fill();//画实心圆
+             		  context.closePath();
              		  
+             		  context.beginPath();
+             		  a4 = (data[i].mouth_left_x) * 6.4;
+           		      b4 = (data[i].mouth_left_y) * 4.8;
+           		      context.arc(a4,b4,5,0,360,false);
+            		  context.fillStyle="red";//填充颜色,默认是黑色
+            		  context.fill();//画实心圆
+            		  context.closePath();
+            		  
+            		  context.beginPath();
+            		  a5 = (data[i].mouth_right_x) * 6.4;
+            		  b5 = (data[i].mouth_right_y) * 4.8;
+            		  context.arc(a5,b5,5,0,360,false);
+             		  context.fillStyle="red";//填充颜色,默认是黑色
+             		  context.fill();//画实心圆
+             		//  context.closePath();
+             		  
+             		  context.beginPath();
+             		  a6 = (data[i].nose_x) * 6.4;
+           		      b6 = (data[i].nose_y) * 4.8;
+           		      context.arc(a6,b6,5,0,360,false);
+            		  context.fillStyle="red";//填充颜色,默认是黑色
+            		  context.fill();//画实心圆
+            		  context.closePath();
+            		  
+            		  context.moveTo(a2,b2);//第一个起点
+            		  context.lineTo(a6,b6);//第二个点
+            		  context.lineTo(a5,b5);//第三个点（以第二个点为起点）
+            		  context.lineWidth=3;
+            		  context.strokeStyle = 'red';
+            		  context.stroke();
+            		  
+            		  context.moveTo(a3,b3);//第一个起点
+            		  context.lineTo(a6,b6);//第二个点
+            		  context.lineTo(a4,b4);//第三个点（以第二个点为起点）
+            		  context.lineWidth=3;
+            		  context.strokeStyle = 'red';
+            		  context.stroke();
              		   
-             		   table_html+=new_table;
+            		 /* context.fillStyle = "white";
+            		  context.strokeStyle = "red";
+            		  context.font = "20pt Helvetica";
+            		  context.textAlign = "center";
+            		  context.textBaseline = "middle" ;
+            		  context.save();
+            		  context.clearRect(0, 0,canvas.width, canvas.height);
+            		  context.translate(canvas.width / 2, canvas.height / 2);
+            		  context.fillText ("Animation over video!", 0, 0);
+            		  context.strokeText ("Animation over video!", 0, 0);
+            		 
+            		  context.textAlign = "center";
+            		  
+            		  context.restore();*/
+                      
+             		  table_html+=new_table;
              	   }
              	   table_html+="</tbody></table>"
              		   $("#result")
@@ -367,7 +467,9 @@ function draw()
     });
 /*	var result = document.getElementById("result");
 	result.innerHTML = '<img src="'+image+'" alt=""/>';*/
-
+	//document.body.appendChild(canvas);
+	//setTimeout();
+	//draw();
     setTimeout("draw()",1000);   
 }
 	
@@ -377,9 +479,8 @@ function draw()
 						<div class="song-info">
 							<h3>视频标题</h3>	
 					</div>
-						<div class="video-grid">
-							<iframe src="https://www.youtube.com/embed/oYiT-vLjhC4" allowfullscreen></iframe>
-						</div>
+						  <div class="video-grid">
+						  <iframe src="https://www.youtube.com/embed/oYiT-vLjhC4" allowfullscreen></iframe></div>
 					</div>
 					<div class="song-grid-right">
 						<div class="share">
@@ -401,6 +502,7 @@ function draw()
 						<script src="jquery.min.js"></script>
 							<script>
 								$(document).ready(function () {
+									//$("#video").hide();
 									size_li = $("#myList li").size();
 									x=1;
 									$('#myList li:lt('+x+')').show();

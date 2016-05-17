@@ -2,6 +2,7 @@
     <wb-module deploy-name="FaceYxc">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/conf"/>
         <property name="context-root" value="FaceYxc"/>
         <property name="java-output-path" value="/FaceYxc/build/classes"/>
     </wb-module>

@@ -13,6 +13,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="css/bootstrap.min.css" rel='stylesheet' type='text/css' media="all" />
 <!-- //bootstrap -->
 <link href="css/dashboard.css" rel="stylesheet">
+<link href="css/video-js.scss" rel="stylesheet">
+<script src="js/video.js"></script>
 <!-- Custom Theme files -->
 <link href="css/style.css" rel='stylesheet' type='text/css' media="all" />
 <script src="js/jquery-1.11.1.min.js"></script>
@@ -290,12 +292,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="show-top-grids">
+			<span>观看时长：</span>
+			<input name="showtime" style="color:#ff0000;width:200px;" id="showtime" type="text" value="0"> 秒
 			<div id="result"></div>
 			
 			<canvas id="canvas" width="640" height="480"></canvas>
 			<video id="video" width="640" height="480" autoplay="autoplay"></video>
 			
 <script type="text/javascript">
+
 	window.addEventListener("DOMContentLoaded", function() {
 		
 		video = document.getElementById("video");
@@ -336,9 +341,28 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	draw();
 	
 }, false);
-
+	
+	function submit_hbase(data1){
+		var time=$('#showtime').val();
+		$.ajax({
+	        type: 'post',  
+	        url: '/FaceYxc/hbase',  
+	        data: {
+	      	'time':time,
+	      	'age':data1[i].age,
+	      	'age_range':data1[i].age_range,
+	      	'gender':data1[i].gender,
+	      	'smile':data1[i].smile,
+	      	'glass':data1[i].glass,
+	      	'race':data1[i].race,
+	      	//'pitch_angle':data1[i].pitch_angle,
+	      	//'yaw_angle':data1[i].yaw_angle,
+	      	//'roll_angle':data1[i].roll_angle
+	        }});
+	}
 function draw()
 {
+	
 	
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -361,17 +385,27 @@ function draw()
         },
         success: function(data) {
         	 if(data.length>0){
+        		 
         		 var table_html = "<span>画面中检测到有"+data.length+"个人脸</span>";
-             	   table_html+="<table  class=\"table user-list table-hover\"><thead><tr><th><span>ID</span></th><th><span>年龄</span></th><th class=\"text-center\"><span>性别</span></th><th ><span>微笑程度</span></th><th><span>是否戴眼镜</span></th><th><span>种族</span></th><th><span>抬头角度</span></th><th><span>平面旋转角度</span></th><th><span>摇头角度</span></th></tr> </thead> <tbody id=\"credit_list\">";
+             	   table_html+="<table  class=\"table user-list table-hover\"><thead><tr><th><span>ID</span></th><th><span>年龄</span></th><th class=\"text-center\"><span>性别</span></th><th ><span>微笑程度</span></th><th><span>是否戴眼镜</span></th><th><span>种族</span></th><th><span>抬头角度</span></th><th><span>平面旋转角度</span></th><th><span>摇头角度</span></th><th><span>左眼上下端坐标</span></th><th><span>右眼上下端坐标</span></th><th><span>睁眼/闭眼</span></th></tr> </thead> <tbody id=\"credit_list\">";
              	   for (var i = 0; i < data.length; i++) {
              		   new_table="<tr><td>"+i+"</td><td>"+data[i].age+"(+/-)"+data[i].age_range+"</td><td>"+data[i].gender+"</td><td>"+
              		   data[i].smile+"</td><td>"+data[i].glass+"</td><td>"+data[i].race+"</td><td>"+data[i].pitch_angle+"</td><td>"
-             		   +data[i].yaw_angle+"</td><td>"+data[i].roll_angle+"</td>"
+             		   +data[i].yaw_angle+"</td><td>"+data[i].roll_angle+"</td><td>("+data[i].Left_eye_top_x+" , "+data[i].Left_eye_top_y+") , ("+data[i].Left_eye_bottom_x+" , "+data[i].Left_eye_bottom_y+")</td><td>("
+             				   +data[i].Right_eye_top_x+" , "+data[i].Right_eye_top_y+") , ( "+data[i].Right_eye_bottom_x+","+data[i].Right_eye_bottom_y+")</td><td> "+data[i].open+"</td>";
              		 // var cav = document.getElementById("cav");
              		 // cav.attr("width", $(window).get(0).innerWidth);
              	     // cav.attr("height", $(window).get(0).innerHeight);
              	     // context = cav.getContext("2d");
+             	    // if(data[i].yaw_angle<0){//如果角度超过 传入数据
+             	    //	pauseclock();
              	     
+             	    //	submit_hbase(data);
+             	   //  }
+             	    if(document.getElementById("showtime").value=='暂停'){
+             	    	startclock();
+             	    }
+             	    
              		  context.beginPath();
              		  a1 = (data[i].center_x) * 6.4;
              		  b1 = (data[i].center_y) * 4.8;            		  
@@ -454,11 +488,12 @@ function draw()
              	   table_html+="</tbody></table>"
              		   $("#result")
      					.html(table_html);
-        	 }/*else{
-        		 var table_html = "<span>未检测到人脸</span>";
+        	 }else{
+        		/* var table_html = "<span>未检测到人脸</span>";
         		 $("#result")
-					.html(table_html);
-        	 }*/
+					.html(table_html);*/
+					pauseclock();
+        	 }
         	
            }
  	 
@@ -470,9 +505,19 @@ function draw()
 	//document.body.appendChild(canvas);
 	//setTimeout();
 	//draw();
-    setTimeout("draw()",1000);   
+    setTimeout("draw()",2000);   
 }
-	
+var se,s=0;  
+function second(){  
+
+
+document.getElementById("showtime").value=s;   //这有一个给id为showtime的input赋值的语句，可以实现动态计时。
+//其实所谓的动态计时，就是在很短的时间里不停给显示时间的地方更新数值，由于速度很快，这样计时器看起来时刻都在变化。但其实不是的，它从本质上还是静态的，这跟js的伪多线程原理是一样的。
+s+=1;
+}  
+function startclock(){se=setInterval("second()",1000);}  //这个函数是要放到按钮的click事件上的
+function pauseclock(){clearInterval(se);document.getElementById("showtime").value='暂停';}    //这个函数是要放到按钮的click事件上的
+function stopclock(){clearInterval(se);ss=1;m=h=s=0;}    //这个函数是要放到按钮的click事件上的
 </script>
 				<div class="col-sm-8 single-left">
 					<div class="song">
@@ -480,7 +525,8 @@ function draw()
 							<h3>视频标题</h3>	
 					</div>
 						  <div class="video-grid">
-						  <iframe src="https://www.youtube.com/embed/oYiT-vLjhC4" allowfullscreen></iframe></div>
+						  <!-- <EMBED src="video/30s/lxljw.rmvb" width=177 height=25 volume=70 autostart=true>music</EMBED>  -->
+						  <!-- <iframe src="http://www.iqiyi.com/v_19rrlwkal8.html" allowfullscreen></iframe> --></div>
 					</div>
 					<div class="song-grid-right">
 						<div class="share">
@@ -499,10 +545,11 @@ function draw()
 					</div>
 					<div class="clearfix"> </div>
 					<div class="published">
-						<script src="jquery.min.js"></script>
+						
 							<script>
 								$(document).ready(function () {
 									//$("#video").hide();
+									//startclock();
 									size_li = $("#myList li").size();
 									x=1;
 									$('#myList li:lt('+x+')').show();

@@ -16,8 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.facepp.error.FaceppParseException;
+import com.yxc.dao.EyeDao;
 import com.yxc.dao.FaceDao;
 import com.yxc.model.Face;
+import com.yxc.model.MaskPoint;
 
 import sun.misc.BASE64Decoder;
 
@@ -56,8 +58,8 @@ public class CameraServlet extends HttpServlet {
 	String img1=img.substring(22);
 	
 	byte [] b = decode.decodeBuffer(img1);
-//	System.out.println("接收到人脸");
-//	String imgFilePath = "C:/Users/lh/Desktop/test22.png";// 新生成的图片
+	System.out.println("接收到人脸");
+//	String imgFilePath = "C:/Users/yxc/Desktop/test22.png";// 新生成的图片
 //	OutputStream out = new FileOutputStream(imgFilePath);
 //	out.write(b);
 //	out.flush();
@@ -75,7 +77,29 @@ public class CameraServlet extends HttpServlet {
 	if(faces.size()>0){
 	for(Face face :faces){
 		JSONObject jsonObject = new JSONObject();
+		MaskPoint mp = null;
 		try {
+			 mp=EyeDao.paraseEye(face.getFaceid());
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (FaceppParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			jsonObject.put("Left_eye_bottom_x",mp.getLeft_eye_bottom_x());
+			jsonObject.put("Left_eye_bottom_y",mp.getLeft_eye_bottom_y());
+			jsonObject.put("Left_eye_top_x",mp.getLeft_eye_top_x());
+			jsonObject.put("Left_eye_top_y",mp.getLeft_eye_top_y());
+			jsonObject.put("Right_eye_bottom_x",mp.getRight_eye_bottom_x());
+			jsonObject.put("Right_eye_bottom_y",mp.getRight_eye_bottom_y());
+			jsonObject.put("Right_eye_top_x",mp.getRight_eye_top_x());
+			jsonObject.put("Right_eye_top_y",mp.getRight_eye_top_y());
+			jsonObject.put("open",mp.getEye_open());
+			
+			
+			
 			jsonObject.put("center_x", face.getCenter_x());
 			jsonObject.put("center_y", face.getCenter_y());
 			jsonObject.put("eye_left_x", face.getEye_left_x());

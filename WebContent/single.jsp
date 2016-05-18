@@ -13,6 +13,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="css/bootstrap.min.css" rel='stylesheet' type='text/css' media="all" />
 <!-- //bootstrap -->
 <link href="css/dashboard.css" rel="stylesheet">
+<link href="video-js/video-js.css" rel="stylesheet" type="text/css">
+ <script src="video-js/video.js"></script>
+ <script>
+   videojs.options.flash.swf = "video-js/video-js.swf";
+ </script>
+
 <!-- Custom Theme files -->
 <link href="css/style.css" rel='stylesheet' type='text/css' media="all" />
 <script src="js/jquery-1.11.1.min.js"></script>
@@ -290,13 +296,28 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="show-top-grids">
+			<span>观看时长：</span>
+			<input name="showtime" style="color:#ff0000;width:200px;" id="showtime" type="text" value="0"> 秒
 			<div id="result"></div>
-			<video id="video" width="640" height="480" autoplay="autoplay"></video>
-
-
+			
+			
+			
 <script type="text/javascript">
+
 	window.addEventListener("DOMContentLoaded", function() {
-		video = document.getElementById("video"),
+		
+		video = document.getElementById("video");
+		var offsettop=$("#video").offset().top;   
+		var offsetleft=$("#video").offset().left; 
+		
+		var canvas = document.getElementById("canvas");
+		canvas.style.position="absolute";
+		canvas.style.top=offsettop;
+		canvas.style.left=offsetleft;
+		context = canvas.getContext("2d");
+		/*video.style.position="absolute";
+		video.style.top="10px";
+		video.style.left="10px";*/
 		videoObj = { "video": true},
 		errBack = function(error) {
 			console.log("视频获取失败: ", error.code); 
@@ -323,15 +344,51 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	draw();
 	
 }, false);
-
+	
+	function submit_hbase(time,all){
+		
+		
+		var video_name=$('#myvideo').attr("src");
+		var video_type=$('#myvideo').attr("value");
+		var age=$('#age').text();
+		var gender=$('#gender').text();
+		var smile=$('#smile').text();
+		var glass=$('#glass').text();
+		var race=$('#race').text();
+		$.ajax({
+	        type: 'post',  
+	        url: '/FaceYxc/hbase',  
+	        data: {
+	      	'time':time,
+	      	"alltime":all,
+	      	'age':age,
+	      	'video_type':video_type,
+	      	'gender':gender,
+	      	'smile':smile,
+	      	'glass':glass,
+	      	'race':race,
+	      	'video_name':video_name
+	      	//'pitch_angle':data1[i].pitch_angle,
+	      	//'yaw_angle':data1[i].yaw_angle,
+	      	//'roll_angle':data1[i].roll_angle
+	        }});
+	}
 function draw()
 {
-	var canvas = document.createElement("canvas");
-	canvas.width = "640";
-	canvas.height = "480";
-	context = canvas.getContext("2d");
-	context.drawImage(video,0,0,640,480);
-	var image = canvas.toDataURL('image/png');
+	
+	
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	var cav = document.createElement("canvas");
+	cav.width = 640;
+	cav.height = 480;
+	ctx = cav.getContext("2d");
+	//context.globalAlpha = 0.3;
+	//alert("hello");
+	//context.translate(0, 480);
+	///canvas.scale(1,-1);
+	ctx.drawImage(video,0,0,640,480);
+	var image = cav.toDataURL('image/png');
 	$.ajax({
         type: 'post',  
         url: '/FaceYxc/camera',  
@@ -340,26 +397,120 @@ function draw()
 
         },
         success: function(data) {
+        	
         	 if(data.length>0){
+        		 
         		 var table_html = "<span>画面中检测到有"+data.length+"个人脸</span>";
-             	   table_html+="<table  class=\"table user-list table-hover\"><thead><tr><th><span>ID</span></th><th><span>年龄</span></th><th class=\"text-center\"><span>性别</span></th><th ><span>微笑程度</span></th><th><span>是否戴眼镜</span></th><th><span>种族</span></th><th><span>抬头角度</span></th><th><span>平面旋转角度</span></th><th><span>摇头角度</span></th></tr> </thead> <tbody id=\"credit_list\">";
+             	   table_html+="<table  class=\"table user-list table-hover\"><thead><tr><th><span>ID</span></th><th><span>年龄</span></th><th class=\"text-center\"><span>性别</span></th><th ><span>微笑程度</span></th><th><span>是否戴眼镜</span></th><th><span>种族</span></th><th><span>抬头角度</span></th><th><span>平面旋转角度</span></th><th><span>摇头角度</span></th><th><span>左眼上下端坐标</span></th><th><span>右眼上下端坐标</span></th><th><span>睁眼/闭眼</span></th></tr> </thead> <tbody id=\"credit_list\">";
              	   for (var i = 0; i < data.length; i++) {
-             		   new_table="<tr><td>"+i+"</td><td>"+data[i].age+"(+/-)"+data[i].age_range+"</td><td>"+data[i].gender+"</td><td>"+
-             		   data[i].smile+"</td><td>"+data[i].glass+"</td><td>"+data[i].race+"</td><td>"+data[i].pitch_angle+"</td><td>"
-             		   +data[i].yaw_angle+"</td><td>"+data[i].roll_angle+"</td>"
+             		   new_table="<tr><td>"+i+"</td><td id='age' >"+data[i].age+"(+/-)"+data[i].age_range+"</td><td id='gender'>"+data[i].gender+"</td><td id='smile'>"+
+             		   data[i].smile+"</td><td id='glass'>"+data[i].glass+"</td><td id='race'>"+data[i].race+"</td><td id='pitch_angle'>"+data[i].pitch_angle+"</td><td>"
+             		   +data[i].yaw_angle+"</td><td>"+data[i].roll_angle+"</td><td>("+data[i].Left_eye_top_x+" , "+data[i].Left_eye_top_y+") , ("+data[i].Left_eye_bottom_x+" , "+data[i].Left_eye_bottom_y+")</td><td>("
+             				   +data[i].Right_eye_top_x+" , "+data[i].Right_eye_top_y+") , ( "+data[i].Right_eye_bottom_x+","+data[i].Right_eye_bottom_y+")</td><td> "+data[i].open+"</td>";
+             		 // var cav = document.getElementById("cav");
+             		 // cav.attr("width", $(window).get(0).innerWidth);
+             	     // cav.attr("height", $(window).get(0).innerHeight);
+             	     // context = cav.getContext("2d");
+             	    // if(data[i].yaw_angle<0){//如果角度超过 传入数据
+             	    //	pauseclock();
+             	     
+             	    //	submit_hbase(data);
+             	   //  }
+             	    if(flag==0&&ispaused==1){
+             	    	startclock();
+             	    }
+             	    
+             		  context.beginPath();
+             		  a1 = (data[i].center_x) * 6.4;
+             		  b1 = (data[i].center_y) * 4.8;            		  
+             		  context.arc(a1,b1,5,0,360,false);
+             		  context.fillStyle="red";//填充颜色,默认是黑色
+             		  context.fill();//画实心圆
+             		  context.closePath();
+
+             		  context.beginPath();
+             		  a2 = (data[i].eye_left_x) * 6.4;
+            		  b2 = (data[i].eye_left_y) * 4.8;
+            		  context.arc(a2,b2,5,0,360,false);
+            		  context.fillStyle="red";//填充颜色,默认是黑色
+            		  context.fill();//画实心圆
+            		  context.closePath();
+            		  
+            		  context.beginPath();
+            		  a3 = (data[i].eye_right_x) * 6.4;
+            		  b3 = (data[i].eye_right_y) * 4.8;
+            		  context.arc(a3,b3,5,0,360,false);
+             		  context.fillStyle="red";//填充颜色,默认是黑色
+             		  context.fill();//画实心圆
+             		  context.closePath();
              		  
+             		  context.beginPath();
+             		  a4 = (data[i].mouth_left_x) * 6.4;
+           		      b4 = (data[i].mouth_left_y) * 4.8;
+           		      context.arc(a4,b4,5,0,360,false);
+            		  context.fillStyle="red";//填充颜色,默认是黑色
+            		  context.fill();//画实心圆
+            		  context.closePath();
+            		  
+            		  context.beginPath();
+            		  a5 = (data[i].mouth_right_x) * 6.4;
+            		  b5 = (data[i].mouth_right_y) * 4.8;
+            		  context.arc(a5,b5,5,0,360,false);
+             		  context.fillStyle="red";//填充颜色,默认是黑色
+             		  context.fill();//画实心圆
+             		//  context.closePath();
+             		  
+             		  context.beginPath();
+             		  a6 = (data[i].nose_x) * 6.4;
+           		      b6 = (data[i].nose_y) * 4.8;
+           		      context.arc(a6,b6,5,0,360,false);
+            		  context.fillStyle="red";//填充颜色,默认是黑色
+            		  context.fill();//画实心圆
+            		  context.closePath();
+            		  
+            		  context.moveTo(a2,b2);//第一个起点
+            		  context.lineTo(a6,b6);//第二个点
+            		  context.lineTo(a5,b5);//第三个点（以第二个点为起点）
+            		  context.lineWidth=3;
+            		  context.strokeStyle = 'red';
+            		  context.stroke();
+            		  
+            		  context.moveTo(a3,b3);//第一个起点
+            		  context.lineTo(a6,b6);//第二个点
+            		  context.lineTo(a4,b4);//第三个点（以第二个点为起点）
+            		  context.lineWidth=3;
+            		  context.strokeStyle = 'red';
+            		  context.stroke();
              		   
-             		   table_html+=new_table;
+            		 /* context.fillStyle = "white";
+            		  context.strokeStyle = "red";
+            		  context.font = "20pt Helvetica";
+            		  context.textAlign = "center";
+            		  context.textBaseline = "middle" ;
+            		  context.save();
+            		  context.clearRect(0, 0,canvas.width, canvas.height);
+            		  context.translate(canvas.width / 2, canvas.height / 2);
+            		  context.fillText ("Animation over video!", 0, 0);
+            		  context.strokeText ("Animation over video!", 0, 0);
+            		 
+            		  context.textAlign = "center";
+            		  
+            		  context.restore();*/
+                      
+             		  table_html+=new_table;
              	   }
              	   table_html+="</tbody></table>"
              		   $("#result")
      					.html(table_html);
-        	 }/*else{
-        		 var table_html = "<span>未检测到人脸</span>";
+        	 }else{
+        		/* var table_html = "<span>未检测到人脸</span>";
         		 $("#result")
-					.html(table_html);
-        	 }*/
-        	
+					.html(table_html);*/
+					if(flag==0){
+					pauseclock();
+					}
+        	 }
+        
            }
  	 
           
@@ -367,40 +518,75 @@ function draw()
     });
 /*	var result = document.getElementById("result");
 	result.innerHTML = '<img src="'+image+'" alt=""/>';*/
-
-    setTimeout("draw()",1000);   
+	//document.body.appendChild(canvas);
+	//setTimeout();
+	//draw();
+    setTimeout("draw()",2000);   
 }
-	
+var se,s=0,flag=0,ispaused=0;  
+function second(){  
+
+
+document.getElementById("showtime").value=s;   //这有一个给id为showtime的input赋值的语句，可以实现动态计时。
+//其实所谓的动态计时，就是在很短的时间里不停给显示时间的地方更新数值，由于速度很快，这样计时器看起来时刻都在变化。但其实不是的，它从本质上还是静态的，这跟js的伪多线程原理是一样的。
+s+=1;
+}  
+function startclock(){se=setInterval("second()",1000); ispaused=0;}  //这个函数是要放到按钮的click事件上的
+function pauseclock(){clearInterval(se);document.getElementById("showtime").value=s ;ispaused=1;}    //这个函数是要放到按钮的click事件上的
+function stopclock(){clearInterval(se);s=0;flag=1;}    //这个函数是要放到按钮的click事件上的
+
 </script>
 				<div class="col-sm-8 single-left">
 					<div class="song">
 						<div class="song-info">
 							<h3>视频标题</h3>	
 					</div>
-						<div class="video-grid">
-							<iframe src="https://www.youtube.com/embed/oYiT-vLjhC4" allowfullscreen></iframe>
-						</div>
+						  <div class="video-grid">
+						  <video id="my_video_1" class="video-js vjs-default-skin" controls    preload="auto"width="640"height="480"poster="video-js/my_video_poster.png"    data-setup="{}">
+                        <source id="myvideo"  value="服装" src="video/30s/clothes1.mp4" type='video/mp4'> 
+                          </video>
+                         <script>
+                         var myPlayer = _V_("my_video_1");
+                         var myFunc = function(){
+                        		// Do something when the event is fired
+                        		stopclock();
+                        		};
+                        	//	var player = videojs('video');  
+                        		myPlayer.play();
+                        		myPlayer.on('ended', function() {  
+                        			  console.log('开始/恢复播放');
+                        			  if(document.getElementById("showtime").value=='暂停'){
+                               	    	startclock();
+                               	    }
+                        			  stopclock();
+                        			  var time=$('#showtime').val();//观察时间；
+                        			  var alltime=myPlayer.currentTime();
+                        			  submit_hbase(time,alltime);
+                        			  //传数据到数据库
+                        			  
+                        		});
+                        		//myPlayer.addEvent("ended", myFunc);
+                        		</script>
+						  <!-- <EMBED src="video/30s/lxljw.rmvb" width=177 height=25 volume=70 autostart=true>music</EMBED>  -->
+						  <!-- <iframe src="http://www.iqiyi.com/v_19rrlwkal8.html" allowfullscreen></iframe> --></div>
 					</div>
 					<div class="song-grid-right">
 						<div class="share">
-							<h5>分享</h5>
+							<h5>实时画面</h5>
 							<ul>
-								<li><a href="#" class="icon fb-icon">Facebook</a></li>
-								<li><a href="#" class="icon dribbble-icon">Dribbble</a></li>
-								<li><a href="#" class="icon twitter-icon">Twitter</a></li>
-								<li><a href="#" class="icon pinterest-icon">Pinterest</a></li>
-								<li><a href="#" class="icon whatsapp-icon">Whatsapp</a></li>
-								<li><a href="#" class="icon like">Like</a></li>
-								<li><a href="#" class="icon comment-icon">Comments</a></li>
-								<li class="view">200 Views</li>
+							<canvas id="canvas" width="640" height="480"></canvas>
+			<video id="video" width="640" height="480" autoplay="autoplay"></video>
+								
 							</ul>
 						</div>
 					</div>
 					<div class="clearfix"> </div>
 					<div class="published">
-						<script src="jquery.min.js"></script>
+						
 							<script>
 								$(document).ready(function () {
+									//$("#video").hide();
+									//startclock();
 									size_li = $("#myList li").size();
 									x=1;
 									$('#myList li:lt('+x+')').show();
@@ -545,494 +731,9 @@ function draw()
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4 single-right">
-					<h3>观看下一个</h3>
-					<div class="single-grid-right">
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r1.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r2.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views </p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r3.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r4.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r5.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r6.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author">By <a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r1.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r2.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r3.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r4.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r5.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-						<div class="single-right-grids">
-							<div class="col-md-4 single-right-grid-left">
-								<a href="single.html"><img src="images/r6.jpg" alt="" /></a>
-							</div>
-							<div class="col-md-8 single-right-grid-right">
-								<a href="single.html" class="title"> Nullam interdum metus</a>
-								<p class="author"><a href="#" class="author">John Maniya</a></p>
-								<p class="views">2,114,200 views</p>
-							</div>
-							<div class="clearfix"> </div>
-						</div>
-					</div>
-				</div>
-				<div class="clearfix"> </div>
-			</div>
-			<!-- footer -->
-			<div class="footer">
-				<div class="footer-grids">
-					<div class="footer-top">
-						<div class="footer-top-nav">
-							<ul>
-								<li><a href="about.html">关于</a></li>
-								<li><a href="press.html">Press</a></li>
-								<li><a href="copyright.html">Copyright</a></li>
-								<li><a href="creators.html">创作者</a></li>
-								<li><a href="#">广告</a></li>
-								<li><a href="developers.html">开发者</a></li>
-							</ul>
-						</div>
-						<div class="footer-bottom-nav">
-							<ul>
-								<li><a href="terms.html">条款</a></li>
-								<li><a href="privacy.html">隐私</a></li>
-								<li><a href="#small-dialog4" class="play-icon popup-with-zoom-anim">反馈</a></li>
-								<li><a href="privacy.html">政策&安全 </a></li>
-								<li><a href="try.html">尝试点新的东西！</a></li>
-								<li><p>Copyright &copy; 2016.Team name My22 rights reserved.</p></li>
-							</ul>
-						</div>
-					</div>
-					<div class="footer-bottom">
-						<ul>
-							<li class="languages">
-								<select class="form-control bfh-countries" data-country="US">
-									<option value="">选择语言</option>
-									<option>Spanish</option>
-									<option>French</option>
-									<option>German</option>
-									<option>Italian</option>
-									<option>Chinese</option>
-									<option>Tagalog</option>
-									<option>Polish</option>
-									<option>Korean</option>
-									<option>Vietnamese</option>
-									<option>Portuguese</option>
-									<option>Japanese</option>
-									<option>Greek</option>
-									<option>Arabic</option>
-									<option>Hindi (urdu)</option>
-									<option>Russian</option>
-									<option>Yiddish</option>
-									<option>Thai (laotian)</option>
-									<option>Persian</option>
-									<option>French Creole</option>
-									<option>Armenian</option>
-									<option>Navaho</option>
-									<option>Hungarian</option>
-									<option>Hebrew</option>
-									<option>Dutch</option>
-									<option>Mon-khmer (cambodian)</option>
-									<option>Gujarathi</option>
-									<option>Ukrainian</option>
-									<option>Czech</option>
-									<option>Pennsylvania Dutch</option>
-									<option>Miao (hmong)</option>
-									<option>Norwegian</option>
-									<option>Slovak</option>
-									<option>Swedish</option>
-									<option>Serbocroatian</option>
-									<option>Kru</option>
-									<option>Rumanian</option>
-									<option>Lithuanian</option>
-									<option>Finnish</option>
-									<option>Panjabi</option>
-									<option>Formosan</option>
-									<option>Croatian</option>
-									<option>Turkish</option>
-									<option>Ilocano</option>
-									<option>Bengali</option>
-									<option>Danish</option>
-									<option>Syriac</option>
-									<option>Samoan</option>
-									<option>Malayalam</option>
-									<option>Cajun</option>
-									<option>Amharic</option>
-								</select>
-							</li>
-							<li class="languages">
-								<select class="form-control bfh-countries">
-									<option value="">选择国家</option>
-									<option value="AFG">Afghanistan</option>
-									<option value="ALA">Åland Islands</option>
-									<option value="ALB">Albania</option>
-									<option value="DZA">Algeria</option>
-									<option value="ASM">American Samoa</option>
-									<option value="AND">Andorra</option>
-									<option value="AGO">Angola</option>
-									<option value="AIA">Anguilla</option>
-									<option value="ATA">Antarctica</option>
-									<option value="ATG">Antigua and Barbuda</option>
-									<option value="ARG">Argentina</option>
-									<option value="ARM">Armenia</option>
-									<option value="ABW">Aruba</option>
-									<option value="AUS">Australia</option>
-									<option value="AUT">Austria</option>
-									<option value="AZE">Azerbaijan</option>
-									<option value="BHS">Bahamas</option>
-									<option value="BHR">Bahrain</option>
-									<option value="BGD">Bangladesh</option>
-									<option value="BRB">Barbados</option>
-									<option value="BLR">Belarus</option>
-									<option value="BEL">Belgium</option>
-									<option value="BLZ">Belize</option>
-									<option value="BEN">Benin</option>
-									<option value="BMU">Bermuda</option>
-									<option value="BTN">Bhutan</option>
-									<option value="BOL">Bolivia, Plurinational State of</option>
-									<option value="BES">Bonaire, Sint Eustatius and Saba</option>
-									<option value="BIH">Bosnia and Herzegovina</option>
-									<option value="BWA">Botswana</option>
-									<option value="BVT">Bouvet Island</option>
-									<option value="BRA">Brazil</option>
-									<option value="IOT">British Indian Ocean Territory</option>
-									<option value="BRN">Brunei Darussalam</option>
-									<option value="BGR">Bulgaria</option>
-									<option value="BFA">Burkina Faso</option>
-									<option value="BDI">Burundi</option>
-									<option value="KHM">Cambodia</option>
-									<option value="CMR">Cameroon</option>
-									<option value="CAN">Canada</option>
-									<option value="CPV">Cape Verde</option>
-									<option value="CYM">Cayman Islands</option>
-									<option value="CAF">Central African Republic</option>
-									<option value="TCD">Chad</option>
-									<option value="CHL">Chile</option>
-									<option value="CHN">China</option>
-									<option value="CXR">Christmas Island</option>
-									<option value="CCK">Cocos (Keeling) Islands</option>
-									<option value="COL">Colombia</option>
-									<option value="COM">Comoros</option>
-									<option value="COG">Congo</option>
-									<option value="COD">Congo, the Democratic Republic of the</option>
-									<option value="COK">Cook Islands</option>
-									<option value="CRI">Costa Rica</option>
-									<option value="CIV">Côte d'Ivoire</option>
-									<option value="HRV">Croatia</option>
-									<option value="CUB">Cuba</option>
-									<option value="CUW">Curaçao</option>
-									<option value="CYP">Cyprus</option>
-									<option value="CZE">Czech Republic</option>
-									<option value="DNK">Denmark</option>
-									<option value="DJI">Djibouti</option>
-									<option value="DMA">Dominica</option>
-									<option value="DOM">Dominican Republic</option>
-									<option value="ECU">Ecuador</option>
-									<option value="EGY">Egypt</option>
-									<option value="SLV">El Salvador</option>
-									<option value="GNQ">Equatorial Guinea</option>
-									<option value="ERI">Eritrea</option>
-									<option value="EST">Estonia</option>
-									<option value="ETH">Ethiopia</option>
-									<option value="FLK">Falkland Islands (Malvinas)</option>
-									<option value="FRO">Faroe Islands</option>
-									<option value="FJI">Fiji</option>
-									<option value="FIN">Finland</option>
-									<option value="FRA">France</option>
-									<option value="GUF">French Guiana</option>
-									<option value="PYF">French Polynesia</option>
-									<option value="ATF">French Southern Territories</option>
-									<option value="GAB">Gabon</option>
-									<option value="GMB">Gambia</option>
-									<option value="GEO">Georgia</option>
-									<option value="DEU">Germany</option>
-									<option value="GHA">Ghana</option>
-									<option value="GIB">Gibraltar</option>
-									<option value="GRC">Greece</option>
-									<option value="GRL">Greenland</option>
-									<option value="GRD">Grenada</option>
-									<option value="GLP">Guadeloupe</option>
-									<option value="GUM">Guam</option>
-									<option value="GTM">Guatemala</option>
-									<option value="GGY">Guernsey</option>
-									<option value="GIN">Guinea</option>
-									<option value="GNB">Guinea-Bissau</option>
-									<option value="GUY">Guyana</option>
-									<option value="HTI">Haiti</option>
-									<option value="HMD">Heard Island and McDonald Islands</option>
-									<option value="VAT">Holy See (Vatican City State)</option>
-									<option value="HND">Honduras</option>
-									<option value="HKG">Hong Kong</option>
-									<option value="HUN">Hungary</option>
-									<option value="ISL">Iceland</option>
-									<option value="IND">India</option>
-									<option value="IDN">Indonesia</option>
-									<option value="IRN">Iran, Islamic Republic of</option>
-									<option value="IRQ">Iraq</option>
-									<option value="IRL">Ireland</option>
-									<option value="IMN">Isle of Man</option>
-									<option value="ISR">Israel</option>
-									<option value="ITA">Italy</option>
-									<option value="JAM">Jamaica</option>
-									<option value="JPN">Japan</option>
-									<option value="JEY">Jersey</option>
-									<option value="JOR">Jordan</option>
-									<option value="KAZ">Kazakhstan</option>
-									<option value="KEN">Kenya</option>
-									<option value="KIR">Kiribati</option>
-									<option value="PRK">Korea, Democratic People's Republic of</option>
-									<option value="KOR">Korea, Republic of</option>
-									<option value="KWT">Kuwait</option>
-									<option value="KGZ">Kyrgyzstan</option>
-									<option value="LAO">Lao People's Democratic Republic</option>
-									<option value="LVA">Latvia</option>
-									<option value="LBN">Lebanon</option>
-									<option value="LSO">Lesotho</option>
-									<option value="LBR">Liberia</option>
-									<option value="LBY">Libya</option>
-									<option value="LIE">Liechtenstein</option>
-									<option value="LTU">Lithuania</option>
-									<option value="LUX">Luxembourg</option>
-									<option value="MAC">Macao</option>
-									<option value="MKD">Macedonia, the former Yugoslav Republic of</option>
-									<option value="MDG">Madagascar</option>
-									<option value="MWI">Malawi</option>
-									<option value="MYS">Malaysia</option>
-									<option value="MDV">Maldives</option>
-									<option value="MLI">Mali</option>
-									<option value="MLT">Malta</option>
-									<option value="MHL">Marshall Islands</option>
-									<option value="MTQ">Martinique</option>
-									<option value="MRT">Mauritania</option>
-									<option value="MUS">Mauritius</option>
-									<option value="MYT">Mayotte</option>
-									<option value="MEX">Mexico</option>
-									<option value="FSM">Micronesia, Federated States of</option>
-									<option value="MDA">Moldova, Republic of</option>
-									<option value="MCO">Monaco</option>
-									<option value="MNG">Mongolia</option>
-									<option value="MNE">Montenegro</option>
-									<option value="MSR">Montserrat</option>
-									<option value="MAR">Morocco</option>
-									<option value="MOZ">Mozambique</option>
-									<option value="MMR">Myanmar</option>
-									<option value="NAM">Namibia</option>
-									<option value="NRU">Nauru</option>
-									<option value="NPL">Nepal</option>
-									<option value="NLD">Netherlands</option>
-									<option value="NCL">New Caledonia</option>
-									<option value="NZL">New Zealand</option>
-									<option value="NIC">Nicaragua</option>
-									<option value="NER">Niger</option>
-									<option value="NGA">Nigeria</option>
-									<option value="NIU">Niue</option>
-									<option value="NFK">Norfolk Island</option>
-									<option value="MNP">Northern Mariana Islands</option>
-									<option value="NOR">Norway</option>
-									<option value="OMN">Oman</option>
-									<option value="PAK">Pakistan</option>
-									<option value="PLW">Palau</option>
-									<option value="PSE">Palestinian Territory, Occupied</option>
-									<option value="PAN">Panama</option>
-									<option value="PNG">Papua New Guinea</option>
-									<option value="PRY">Paraguay</option>
-									<option value="PER">Peru</option>
-									<option value="PHL">Philippines</option>
-									<option value="PCN">Pitcairn</option>
-									<option value="POL">Poland</option>
-									<option value="PRT">Portugal</option>
-									<option value="PRI">Puerto Rico</option>
-									<option value="QAT">Qatar</option>
-									<option value="REU">Réunion</option>
-									<option value="ROU">Romania</option>
-									<option value="RUS">Russian Federation</option>
-									<option value="RWA">Rwanda</option>
-									<option value="BLM">Saint Barthélemy</option>
-									<option value="SHN">Saint Helena, Ascension and Tristan da Cunha</option>
-									<option value="KNA">Saint Kitts and Nevis</option>
-									<option value="LCA">Saint Lucia</option>
-									<option value="MAF">Saint Martin (French part)</option>
-									<option value="SPM">Saint Pierre and Miquelon</option>
-									<option value="VCT">Saint Vincent and the Grenadines</option>
-									<option value="WSM">Samoa</option>
-									<option value="SMR">San Marino</option>
-									<option value="STP">Sao Tome and Principe</option>
-									<option value="SAU">Saudi Arabia</option>
-									<option value="SEN">Senegal</option>
-									<option value="SRB">Serbia</option>
-									<option value="SYC">Seychelles</option>
-									<option value="SLE">Sierra Leone</option>
-									<option value="SGP">Singapore</option>
-									<option value="SXM">Sint Maarten (Dutch part)</option>
-									<option value="SVK">Slovakia</option>
-									<option value="SVN">Slovenia</option>
-									<option value="SLB">Solomon Islands</option>
-									<option value="SOM">Somalia</option>
-									<option value="ZAF">South Africa</option>
-									<option value="SGS">South Georgia and the South Sandwich Islands</option>
-									<option value="SSD">South Sudan</option>
-									<option value="ESP">Spain</option>
-									<option value="LKA">Sri Lanka</option>
-									<option value="SDN">Sudan</option>
-									<option value="SUR">Suriname</option>
-									<option value="SJM">Svalbard and Jan Mayen</option>
-									<option value="SWZ">Swaziland</option>
-									<option value="SWE">Sweden</option>
-									<option value="CHE">Switzerland</option>
-									<option value="SYR">Syrian Arab Republic</option>
-									<option value="TWN">Taiwan, Province of China</option>
-									<option value="TJK">Tajikistan</option>
-									<option value="TZA">Tanzania, United Republic of</option>
-									<option value="THA">Thailand</option>
-									<option value="TLS">Timor-Leste</option>
-									<option value="TGO">Togo</option>
-									<option value="TKL">Tokelau</option>
-									<option value="TON">Tonga</option>
-									<option value="TTO">Trinidad and Tobago</option>
-									<option value="TUN">Tunisia</option>
-									<option value="TUR">Turkey</option>
-									<option value="TKM">Turkmenistan</option>
-									<option value="TCA">Turks and Caicos Islands</option>
-									<option value="TUV">Tuvalu</option>
-									<option value="UGA">Uganda</option>
-									<option value="UKR">Ukraine</option>
-									<option value="ARE">United Arab Emirates</option>
-									<option value="GBR">United Kingdom</option>
-									<option value="USA">United States</option>
-									<option value="UMI">United States Minor Outlying Islands</option>
-									<option value="URY">Uruguay</option>
-									<option value="UZB">Uzbekistan</option>
-									<option value="VUT">Vanuatu</option>
-									<option value="VEN">Venezuela, Bolivarian Republic of</option>
-									<option value="VNM">Viet Nam</option>
-									<option value="VGB">Virgin Islands, British</option>
-									<option value="VIR">Virgin Islands, U.S.</option>
-									<option value="WLF">Wallis and Futuna</option>
-									<option value="ESH">Western Sahara</option>
-									<option value="YEM">Yemen</option>
-									<option value="ZMB">Zambia</option>
-									<option value="ZWE">Zimbabwe</option>
-								</select>
-							</li>
-							<li class="languages">
-								<select class="form-control bfh-countries" data-country="US">
-									<option value="">Safety Off</option>
-									<option value="">Safety On</option>
-								</select>
-							</li>
-							<li><a href="history.html" class="f-history">历史</a></li>
-							<li><a href="#small-dialog5" class="play-icon popup-with-zoom-anim f-history f-help">帮助</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!-- //footer -->
+				
+			
+		
 		</div>
 		<div class="clearfix"> </div>
 	<div class="drop-menu">

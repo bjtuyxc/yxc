@@ -20,4 +20,16 @@
     <servlet-name>CameraServlet</servlet-name>
     <url-pattern>/camera</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <display-name>HbaseServlet</display-name>
+    <servlet-name>HbaseServlet</servlet-name>
+    <servlet-class>
+        com.yxc.servlet.HbaseServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HbaseServlet</servlet-name>
+    <url-pattern>/hbase</url-pattern>
+  </servlet-mapping>
 </web-app>

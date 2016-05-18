@@ -30,11 +30,12 @@ public  static List<Face> paraseFace(byte[] img) throws JSONException, FaceppPar
 	postParameters.setAttribute("glass,pose,gender,age,race,smiling");
 	List<Face> faces=new ArrayList<Face>();
     JSONObject result=httpRequests.detectionDetect(postParameters);
-    System.out.println(result);
+   System.out.println(result);
     
     int length=result.getJSONArray("face").length();
     for(int i=0;i<length;i++){
     	Face face=new Face();
+    	face.setFaceid(result.getJSONArray("face").getJSONObject(i).getString("face_id"));
     	face.setCenter_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("center").getDouble("x"));
     	face.setCenter_y(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("center").getDouble("y"));
     	face.setEye_left_x(result.getJSONArray("face").getJSONObject(i).getJSONObject("position").getJSONObject("eye_left").getDouble("x"));

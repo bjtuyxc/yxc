@@ -1,15 +1,6 @@
 package com.yxc.model;
 
 public class Face {
-	private String  faceid;
-	
-public String getFaceid() {
-		return faceid;
-	}
-	public void setFaceid(String faceid) {
-		this.faceid = faceid;
-	}
-	
 private String gender;
 private int age;
 private int age_range;//ÄêÁäÎó²î

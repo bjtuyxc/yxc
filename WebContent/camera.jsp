@@ -8,7 +8,7 @@
 </head>
 
 <body>
-<video id="video" width="640" height="480" autoplay="autoplay" type="hidden"></video>
+<video id="video" width="640" height="480" autoplay="autoplay"></video>
 <div id="result"></div>
 
 <script type="text/javascript">
@@ -59,13 +59,14 @@ function draw()
         success: function(data) {
         
            }
-
+ 	 
+          
+  
     });
 /*	var result = document.getElementById("result");
 	result.innerHTML = '<img src="'+image+'" alt=""/>';*/
-	document.body.appendChild(canvas);
 
-    setTimeout("draw()",10000);   
+    setTimeout("draw()",1000);   
 }
 	
 </script>

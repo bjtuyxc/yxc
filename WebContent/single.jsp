@@ -4,6 +4,15 @@
 <html>
 <head>
 <title>single</title>
+<script src="js/jquery-1.11.1.min.js"></script>
+ <link rel="stylesheet" href="assets/css/reset.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="assets/css/demo.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="Source/assets/css/simplemodal.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script src="assets/javascript/mootools-core-1.3.1.js" type="text/javascript" charset="utf-8"></script>
+    <script src="assets/javascript/mootools-more-1.3.1.1.js" type="text/javascript" charset="utf-8"></script>
+    <script src="Source/simple-modal.js" type="text/javascript" charset="utf-8"></script>
+    <script src="assets/javascript/demo.js" type="text/javascript" charset="utf-8"></script>
+    
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="My Play Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
@@ -18,10 +27,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
  <script>
    videojs.options.flash.swf = "video-js/video-js.swf";
  </script>
+ 
+
+
 
 <!-- Custom Theme files -->
 <link href="css/style.css" rel='stylesheet' type='text/css' media="all" />
-<script src="js/jquery-1.11.1.min.js"></script>
+
 <!--start-smoth-scrolling-->
 <!-- fonts -->
 <link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -347,7 +359,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	
 	function submit_hbase(time,all){
 		
-		
+		 
 		var video_name=$('#myvideo').attr("src");
 		var video_type=$('#myvideo').attr("value");
 		var age=$('#age').text();
@@ -355,6 +367,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		var smile=$('#smile').text();
 		var glass=$('#glass').text();
 		var race=$('#race').text();
+		var SM = new SimpleModal({"hideHeader":true, "closeButton":false, "btn_ok":"Close window", "width":600});
+        SM.show({
+          "model":"提交hbase结果",
+          "contents":"观看时长："+time+"秒"+"\n总时长："+all+"秒\n年龄:"+age+"\n性别："+gender+"\n微笑程度："+smile+"\n种族："+race+"\n是否带眼镜："+glass
+        });
 		$.ajax({
 	        type: 'post',  
 	        url: '/FaceYxc/hbase',  
@@ -555,9 +572,7 @@ function stopclock(){clearInterval(se);s=0;flag=1;}    //这个函数是要放�
                         		myPlayer.play();
                         		myPlayer.on('ended', function() {  
                         			  console.log('开始/恢复播放');
-                        			  if(document.getElementById("showtime").value=='暂停'){
-                               	    	startclock();
-                               	    }
+                        			  
                         			  stopclock();
                         			  var time=$('#showtime').val();//观察时间；
                         			  var alltime=myPlayer.currentTime();

@@ -58,6 +58,8 @@ public  static List<Face> paraseFace(byte[] img) throws JSONException, FaceppPar
         face.setPitch_angle(result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("pose").getJSONObject("pitch_angle").getDouble("value"));
         face.setYaw_angle(result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("pose").getJSONObject("yaw_angle").getDouble("value"));
         face.setRoll_angle(result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("pose").getJSONObject("roll_angle").getDouble("value"));
+        face.setGender_confidence(result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("gender").getDouble("confidence"));
+        face.setRace_confidence(result.getJSONArray("face").getJSONObject(i).getJSONObject("attribute").getJSONObject("race").getDouble("confidence"));
         faces.add(face);
     }
     return faces;

@@ -4,6 +4,7 @@
 <html>
 <head>
 <title>single</title>
+
 <script src="js/jquery-1.11.1.min.js"></script>
  <link rel="stylesheet" href="assets/css/reset.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="assets/css/demo.css" type="text/css" media="screen" title="no title" charset="utf-8">
@@ -28,9 +29,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
    videojs.options.flash.swf = "video-js/video-js.swf";
  </script>
  
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-
-
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/tabs.css" />
+		<link rel="stylesheet" type="text/css" href="css/tabstyles.css" />
 <!-- Custom Theme files -->
 <link href="css/style.css" rel='stylesheet' type='text/css' media="all" />
 
@@ -39,6 +43,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 <link href='http://fonts.useso.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
 <!-- //fonts -->
+ <link href="bower_components/bootstrap-social/bootstrap-social.css" rel="stylesheet">
+<link href="bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
 </head>
   <body>
 
@@ -306,13 +313,167 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					</div>
 				</div>
         </div>
+       
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 			<div class="show-top-grids">
 			<span>观看时长：</span>
-			<input name="showtime" style="color:#ff0000;width:200px;" id="showtime" type="text" value="0"> 秒
-			<div id="result"></div>
+			<button id="mytime" type="button" class="btn btn-warning btn-circle btn-xl">12
+                            </button>秒
+			<!-- <input name="showtime" style="color:#ff0000;width:200px;" id="showtime" type="text" value="0"> 秒
+			 -->
 			
-			
+			<section>
+				<div class="tabs tabs-style-bar">
+					<nav>
+						<ul>
+							<li><a href="#age" ><p class="fa   fa-hand-o-up"> 年龄检测</p></a></li>
+							<li><a href="#gender" ><p class="fa  fa-user"> 性别检测</p></a></li>
+							<li><a href="#glass" ><p class="fa fa-comments-o"> 是否戴眼镜</p></a></li>
+							<li><a href="#pose" ><p class="fa  fa-arrow-up"> 脸的朝向</p></a></li>
+							<li><a href="#position" ><p class="fa  fa-bomb"> 关键点检测</p></a></li>
+							<li><a href="#race" ><p class="fa  fa-male"> 种族检测</p></a></li>
+							<li><a href="#smile" > <p class="fa  fa-smile-o"> 微笑值检测</p> </a></li>
+							<li><a href="#eye" > <p class="fa  fa-eye"> 眼球检测 </p></a></li>
+							<li><a href="#group" > <p class="fa fa-group"> 多人人脸检测 </p></a></li>
+						</ul>
+					</nav>
+					<div class="content-wrap">
+						<section id="age">
+						<div class="col-lg-4">
+						<div class="panel panel-primary">
+                        <div class="panel-heading">
+                                                                 年龄
+                        </div>
+                        <div class="panel-body">
+                            <p id="myage"></p>
+                        </div>
+                        <div class="panel-footer">
+                            	年龄检测
+                        </div>
+                    </div>
+                    </div>
+						</section>
+						<section id="gender">	<div class="col-lg-4">
+						<div class="panel panel-danger">
+                        <div class="panel-heading">
+                                                                 性别
+                        </div>
+                        <div class="panel-body">
+                            <p id="mygender"></p>
+                        </div>
+                        <div id="gender_confidence" class="panel-footer">
+                                                              置信度：
+                        </div>
+                    </div>
+                    </div></section>
+						<section id="glass">	<div class="col-lg-4">
+						<div class="panel panel-green">
+                        <div class="panel-heading">
+                                                                 眼镜检测
+                        </div>
+                        <div class="panel-body">
+                            <p id="myglass"></p>
+                        </div>
+                        <div id="myglass_confidence" class="panel-footer">
+                                                              置信度：
+                        </div>
+                    </div>
+                    </div></section>
+						<section id="pose">	<div class="col-lg-3">
+						<div class="panel panel-success">
+                        <div class="panel-heading">
+                                                                 抬头角度
+                        </div>
+                        <div class="panel-body">
+                            <p id="mypitch_angle"></p>
+                        </div>
+                        <div class="panel-footer">
+                            
+                        </div>
+                    </div>
+                    </div>	<div class="col-lg-3">
+						<div class="panel panel-primary">
+                        <div class="panel-heading">
+                                                                 平面旋转角度
+                        </div>
+                        <div class="panel-body">
+                            <p id="myyaw_angle"></p>
+                        </div>
+                        <div class="panel-footer">
+                            
+                        </div>
+                    </div>
+                    </div>	<div class="col-lg-3">
+						<div class="panel panel-warning">
+                        <div class="panel-heading">
+                                                                摇头 角度
+                        </div>
+                        <div class="panel-body">
+                            <p id="myroll_angle"></p>
+                        </div>
+                        <div class="panel-footer">
+                          
+                        </div>
+                    </div>
+                    </div></section>
+						<section id="position">	<div class="col-lg-4">
+						<div class="panel panel-yellow">
+                        <div class="panel-heading">
+                                                                 关键点检测
+                        </div>
+                        <div class="panel-body">
+                            <p id="myposition"></p>
+                        </div>
+                        <div class="panel-footer">
+                                                               在画面实时更新关键点坐标
+                        </div>
+                    </div>
+                    </div></section>
+						<section id="race">	<div class="col-lg-4">
+						<div class="panel panel-primary">
+                        <div class="panel-heading">
+                                                                 种族
+                        </div>
+                        <div class="panel-body">
+                            <p id="myrace"></p>
+                        </div>
+                        <div id="race_confidence" class="panel-footer">
+                                                             置信度：
+                        </div>
+                    </div>
+                    </div></section>
+						<section id="smile">	<div class="col-lg-4">
+						<div class="panel panel-primary">
+                        <div class="panel-heading">
+                                                                 微笑值
+                        </div>
+                        <div class="panel-body">
+                            <p id="mysmile"></p>
+                        </div>
+                        <div class="panel-footer">
+                                                           微笑值检测
+                        </div>
+                    </div>
+                    </div></section>
+						<section id="eye">	<div class="col-lg-4">
+						<div class="panel panel-primary">
+                        <div class="panel-heading">
+                                                                 眼镜睁/闭
+                        </div>
+                        <div class="panel-body">
+                            <p id="myeye"></p>
+                        </div>
+                        <div class="panel-footer">
+                                                            眼睛检测
+                        </div>
+                    </div>
+                    </div>	</section>
+						<section id="group"><div id="result"></div></section>
+						<section id="section-linemove-10"><p>5</p></section>
+					</div><!-- /content -->
+				</div><!-- /tabs -->
+			</section>
+		
 			
 <script type="text/javascript">
 
@@ -362,16 +523,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		 
 		var video_name=$('#myvideo').attr("src");
 		var video_type=$('#myvideo').attr("value");
-		var age=$('#age').text();
-		var gender=$('#gender').text();
-		var smile=$('#smile').text();
-		var glass=$('#glass').text();
-		var race=$('#race').text();
-		var SM = new SimpleModal({"hideHeader":true, "closeButton":false, "btn_ok":"Close window", "width":600});
+		var age=$('#age1').text();
+		var gender=$('#gender1').text();
+		var smile=$('#smile1').text();
+		var glass=$('#glass1').text();
+		var race=$('#race1').text();
+		var contents="观看时长："+time+"秒"+"\n总时长："+all+"秒\n年龄:"+age+"\n性别："+gender+"\n微笑程度："+smile+"\n种族："+race+"\n是否带眼镜："+glass;
+		$('#hbase').click();
+		$('#hbase_content').text(contents);
+		/*var SM = new SimpleModal({"hideHeader":true, "closeButton":false, "btn_ok":"Close window", "width":600});
         SM.show({
           "model":"提交hbase结果",
           "contents":"观看时长："+time+"秒"+"\n总时长："+all+"秒\n年龄:"+age+"\n性别："+gender+"\n微笑程度："+smile+"\n种族："+race+"\n是否带眼镜："+glass
-        });
+        });*/
 		$.ajax({
 	        type: 'post',  
 	        url: '/FaceYxc/hbase',  
@@ -419,9 +583,24 @@ function draw()
         		 
         		 var table_html = "<span>画面中检测到有"+data.length+"个人脸</span>";
              	   table_html+="<table  class=\"table user-list table-hover\"><thead><tr><th><span>ID</span></th><th><span>年龄</span></th><th class=\"text-center\"><span>性别</span></th><th ><span>微笑程度</span></th><th><span>是否戴眼镜</span></th><th><span>种族</span></th><th><span>抬头角度</span></th><th><span>平面旋转角度</span></th><th><span>摇头角度</span></th><th><span>左眼上下端坐标</span></th><th><span>右眼上下端坐标</span></th><th><span>睁眼/闭眼</span></th></tr> </thead> <tbody id=\"credit_list\">";
+             	  
              	   for (var i = 0; i < data.length; i++) {
-             		   new_table="<tr><td>"+i+"</td><td id='age' >"+data[i].age+"(+/-)"+data[i].age_range+"</td><td id='gender'>"+data[i].gender+"</td><td id='smile'>"+
-             		   data[i].smile+"</td><td id='glass'>"+data[i].glass+"</td><td id='race'>"+data[i].race+"</td><td id='pitch_angle'>"+data[i].pitch_angle+"</td><td>"
+             		   $('#myage').text(data[i].age+"(+/-)"+data[i].age_range+"岁");
+             		   $('#mygender').text(data[i].gender);
+             		   $('#gender_confidence').text("置信度"+data[i].gender_confidence);
+             		  $('#mysmile').text(data[i].smile);
+             		 $('#myglass').text(data[i].glass);
+             		$('#myglass_confidence').text("置信度"+data[i].glass_rate);
+             		$('#race_confidence').text("置信度"+data[i].race_confidence);
+             		$('#myrace').text(data[i].race);
+             		$('#myyaw_angle').text(data[i].yaw_angle);
+             		$('#mypitch_angle').text(data[i].pitch_angle);
+             		$('#myroll_angle').text(data[i].roll_angle);
+             		$('#myeye').text(data[i].open);
+             		$('#myposition').text("("+data[i].center_x+","+data[i].center_y+")");
+             		
+             		   new_table="<tr><td>"+i+"</td><td id='age1' >"+data[i].age+"(+/-)"+data[i].age_range+"</td><td id='gender1'>"+data[i].gender+"</td><td id='smile1'>"+
+             		   data[i].smile+"</td><td id='glass1'>"+data[i].glass+"</td><td id='race1'>"+data[i].race+"</td><td id='pitch_angle1'>"+data[i].pitch_angle+"</td><td>"
              		   +data[i].yaw_angle+"</td><td>"+data[i].roll_angle+"</td><td>("+data[i].Left_eye_top_x+" , "+data[i].Left_eye_top_y+") , ("+data[i].Left_eye_bottom_x+" , "+data[i].Left_eye_bottom_y+")</td><td>("
              				   +data[i].Right_eye_top_x+" , "+data[i].Right_eye_top_y+") , ( "+data[i].Right_eye_bottom_x+","+data[i].Right_eye_bottom_y+")</td><td> "+data[i].open+"</td>";
              		 // var cav = document.getElementById("cav");
@@ -543,16 +722,39 @@ function draw()
 var se,s=0,flag=0,ispaused=0;  
 function second(){  
 
-
-document.getElementById("showtime").value=s;   //这有一个给id为showtime的input赋值的语句，可以实现动态计时。
+$('#mytime').text(s);
+document.getElementById("mytime").text=s;   //这有一个给id为showtime的input赋值的语句，可以实现动态计时。
 //其实所谓的动态计时，就是在很短的时间里不停给显示时间的地方更新数值，由于速度很快，这样计时器看起来时刻都在变化。但其实不是的，它从本质上还是静态的，这跟js的伪多线程原理是一样的。
 s+=1;
 }  
 function startclock(){se=setInterval("second()",1000); ispaused=0;}  //这个函数是要放到按钮的click事件上的
-function pauseclock(){clearInterval(se);document.getElementById("showtime").value=s ;ispaused=1;}    //这个函数是要放到按钮的click事件上的
+function pauseclock(){clearInterval(se);$('#mytime').text(s);document.getElementById("mytime").text=s ;ispaused=1;}    //这个函数是要放到按钮的click事件上的
 function stopclock(){clearInterval(se);s=0;flag=1;}    //这个函数是要放到按钮的click事件上的
 
 </script>
+ <button id="hbase" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="display:none;">
+                                Launch Demo Modal
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">提交HBase成功</h4>
+                                        </div>
+                                        <div id="hbase_content" class="modal-body">
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-primary">确认</button>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
 				<div class="col-sm-8 single-left">
 					<div class="song">
 						<div class="song-info">
@@ -574,7 +776,7 @@ function stopclock(){clearInterval(se);s=0;flag=1;}    //这个函数是要放�
                         			  console.log('开始/恢复播放');
                         			  
                         			  stopclock();
-                        			  var time=$('#showtime').val();//观察时间；
+                        			  var time=$('#mytime').text();//观察时间；
                         			  var alltime=myPlayer.currentTime();
                         			  submit_hbase(time,alltime);
                         			  //传数据到数据库
@@ -762,6 +964,16 @@ function stopclock(){clearInterval(se);s=0;flag=1;}    //这个函数是要放�
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/cbpFWTabs.js"></script>
+		<script>
+			(function() {
+
+				[].slice.call( document.querySelectorAll( '.tabs' ) ).forEach( function( el ) {
+					new CBPFWTabs( el );
+				});
+
+			})();
+		</script>
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
   </body>
 </html>

@@ -116,6 +116,8 @@ public class CameraServlet extends HttpServlet {
 		jsonObject.put("age", face.getAge());
 		jsonObject.put("age_range", face.getAge_range());
 		jsonObject.put("gender", face.getGender());
+		jsonObject.put("gender_confidence", face.getGender_confidence());
+		jsonObject.put("race_confidence", face.getRace_confidence());
 		jsonObject.put("smile", face.getSmiling());
 		
 		jsonObject.put("glass", face.getGlass());

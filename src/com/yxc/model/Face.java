@@ -11,9 +11,24 @@ public String getFaceid() {
 	}
 	
 private String gender;
+private double gender_confidence;
 private int age;
 private int age_range;//ÄêÁäÎó²î
 private String race;
+private double race_confidence;
+public double getGender_confidence() {
+	return gender_confidence;
+}
+public void setGender_confidence(double gender_confidence) {
+	this.gender_confidence = gender_confidence;
+}
+public double getRace_confidence() {
+	return race_confidence;
+}
+public void setRace_confidence(double race_confidence) {
+	this.race_confidence = race_confidence;
+}
+
 private double smiling;//Î¢Ğ¦Öµ
 private String glass;//ÊÇ·ñ´÷ÑÛ¾µ
 private double glass_rate;//ÑÛ¾µµÄÖÃĞÅ¶È

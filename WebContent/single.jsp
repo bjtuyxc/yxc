@@ -72,7 +72,39 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<a href="upload.html">上传</a>
 				</div>	
 				<div class="signin">
-					<a href="#small-dialog2" class="play-icon popup-with-zoom-anim">注册</a>
+				
+				<%
+				   String email =(String)request.getSession().getAttribute("username"); 
+				   System.out.println("user:"+email);
+				   if(email != null){
+				%>					
+				<a href="" class="play-icon popup-with-zoom-anim"><%=email %></a>
+				<a href="" class="play-icon popup-with-zoom-anim" onclick="logout();">注销</a>
+					<%} %>
+					
+				<%					  
+			   		if(email == null){
+				%>					
+					<a href="#small-dialog3" class="play-icon popup-with-zoom-anim">注册</a>
+				<%} %>
+				
+				<script>
+					function logout(){
+						$.ajax({
+					        type: 'post',  
+					        url: '/FaceYxc/com.yxc.servlet/LoginServlet',  
+					        data: {
+					      	'email':null,
+					      	'password':null,
+					      	'tel':null,
+					        },
+					        error:function (data){
+					        	window.location.reload();
+					        }
+						});
+					}
+				</script>
+				
 					<!-- pop-up-box -->
 									<script type="text/javascript" src="js/modernizr.custom.min.js"></script>    
 									<link href="css/popuo-box.css" rel="stylesheet" type="text/css" media="all" />
@@ -115,13 +147,35 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 											</div>
 										</div>
 										<div class="signup">
-											<form>
-												<input type="text" class="email" placeholder="邮箱地址" required="required" pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?" title="请输入有效的邮箱地址"/>
-												<input type="password" placeholder="密码" required="required" pattern=".{6,}" title="需要至少六个字符" autocomplete="off" />
-												<input type="text" class="email" placeholder="手机号" maxlength="11" pattern="[1-9]{1}\d{9}" title="请输入有效的手机号码" />
+											<form id="registerForm" onsubmit="reg();">
+												<input type="text" class="email" id="email" placeholder="邮箱地址" required="required" pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?" title="请输入有效的邮箱地址"/>
+												<input type="password" id="password" placeholder="密码" required="required" pattern=".{6,}" title="需要至少六个字符" autocomplete="off" />
+												<input type="text" class="email" id="tel" placeholder="手机号" maxlength="11" pattern="[1-9]{1}\d{10}" title="请输入有效的手机号码" />
 												<input type="submit"  value="注册"/>
 											</form>
 										</div>
+										
+										<script type="text/javascript">
+							
+										function reg() {
+											var form = document.getElementById('registerForm');
+											var email = document.getElementById("email").value;
+											var password = document.getElementById("password").value;
+											var tel = document.getElementById("tel").value;
+											
+											$.ajax({
+										        type: 'post',  
+										        url: '/FaceYxc/com.yxc.servlet/RegisterServlet',  
+										        data: {
+										      	'email':email,
+										      	'password':password,
+										      	'tel':tel,
+										        }
+											});
+												
+										};
+
+										</script>
 										<div class="clearfix"> </div>
 									</div>	
 									<div id="small-dialog7" class="mfp-hide">
@@ -214,7 +268,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 									</script>	
 				</div>
 				<div class="signin">
-					<a href="#small-dialog" class="play-icon popup-with-zoom-anim">登录</a>
+					<%					  
+			   			if(email == null){
+					%>					
+					<a href="#small-dialog" class="play-icon popup-with-zoom-anim">登录</a> 
+					<%} %>	
 					<div id="small-dialog" class="mfp-hide">
 						<h3>登录</h3>
 						<div class="social-sits">
@@ -229,11 +287,34 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</div>
 						<div class="signup">
-							<form>
-								<input type="text" class="email" placeholder="请输入邮箱地址/手机号码" required="required" pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?"/>
-								<input type="password" placeholder="密码" required="required" pattern=".{6,}" title="需要至少六个字符" autocomplete="off" />
+							<form id="loginForm" onsubmit="login();">
+								<input type="text" class="email" id="email" placeholder="请输入邮箱地址" required="required" pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?"/>
+								<input type="password" id="password" placeholder="密码" required="required" pattern=".{6,}" title="需要至少六个字符" autocomplete="off" />
 								<input type="submit"  value="登录"/>
 							</form>
+							
+							<script type="text/javascript">
+							
+							function login() {
+								var form = document.getElementById('loginForm');
+								var email = document.getElementById("email").value;
+								var password = document.getElementById("password").value;
+								
+								$.ajax({
+							        type: 'post',  
+							        url: '/FaceYxc/com.yxc.servlet/LoginServlet',  
+							        data: {
+							      	'email':email,
+							      	'password':password,
+							        },
+							        async: false,
+							        error:function(){
+							        	window.location.reload();
+							        },
+								}); 
+							};
+
+						</script>
 							<div class="forgot">
 								<a href="#">忘记密码？</a>
 							</div>
@@ -575,21 +656,20 @@ function draw()
         url: '/FaceYxc/camera',  
         data: {
       	  'img':image
-
         },
         success: function(data) {
         	
         	 if(data.length>0){
+        		   var table_html = "<span>画面中检测到有"+data.length+"个人脸</span>";
         		 
-        		 var table_html = "<span>画面中检测到有"+data.length+"个人脸</span>";
              	   table_html+="<table  class=\"table user-list table-hover\"><thead><tr><th><span>ID</span></th><th><span>年龄</span></th><th class=\"text-center\"><span>性别</span></th><th ><span>微笑程度</span></th><th><span>是否戴眼镜</span></th><th><span>种族</span></th><th><span>抬头角度</span></th><th><span>平面旋转角度</span></th><th><span>摇头角度</span></th><th><span>左眼上下端坐标</span></th><th><span>右眼上下端坐标</span></th><th><span>睁眼/闭眼</span></th></tr> </thead> <tbody id=\"credit_list\">";
              	  
              	   for (var i = 0; i < data.length; i++) {
-             		   $('#myage').text(data[i].age+"(+/-)"+data[i].age_range+"岁");
-             		   $('#mygender').text(data[i].gender);
-             		   $('#gender_confidence').text("置信度"+data[i].gender_confidence);
-             		  $('#mysmile').text(data[i].smile);
-             		 $('#myglass').text(data[i].glass);
+           		   	$('#myage').text(data[i].age+"(+/-)"+data[i].age_range+"岁");
+           		   	$('#mygender').text(data[i].gender);
+           		   	$('#gender_confi	dence').text("置信度"+data[i].gender_confidence);
+             		$('#mysmile').text(data[i].smile);
+             		$('#myglass').text(data[i].glass);
              		$('#myglass_confidence').text("置信度"+data[i].glass_rate);
              		$('#race_confidence').text("置信度"+data[i].race_confidence);
              		$('#myrace').text(data[i].race);
@@ -707,17 +787,14 @@ function draw()
 					}
         	 }
         
-           }
- 	 
-          
-  
+           },	             
     });
 /*	var result = document.getElementById("result");
 	result.innerHTML = '<img src="'+image+'" alt=""/>';*/
 	//document.body.appendChild(canvas);
 	//setTimeout();
 	//draw();
-    setTimeout("draw()",2000);   
+    setTimeout("draw()",1000);   
 }
 var se,s=0,flag=0,ispaused=0;  
 function second(){  
@@ -841,114 +918,92 @@ function stopclock(){clearInterval(se);s=0;flag=1;}    //这个函数是要放�
 					</div>
 					<div class="all-comments">
 						<div class="all-comments-info">
-							<a href="#">所有评论(8,657)</a>
 							<div class="box">
-								<form>
-									<input type="text" placeholder="姓名" required=" ">			           					   
-									<input type="text" placeholder="邮箱" required=" ">
-									<input type="text" placeholder="手机" required=" ">
-									<textarea placeholder="信息" required=" "></textarea>
+								<form id="sendCommentForm" onsubmit="sendCom();">
+									<textarea id="content" placeholder="登陆后可评论" required=" "></textarea>
 									<input type="submit" value="SEND">
 									<div class="clearfix"> </div>
 								</form>
 							</div>
-							<div class="all-comments-buttons">
-								<ul>
-									<li><a href="#" class="top">热评</a></li>
-									<li><a href="#" class="top newest">最新</a></li>
-									<li><a href="#" class="top my-comment">我的评论</a></li>
-								</ul>
-							</div>
 						</div>
-						<div class="media-grids">
-							<div class="media">
-								<h5>用户A</h5>
-								<div class="media-left">
-									<a href="#">
-										
-									</a>
-								</div>
-								<div class="media-body">
-									<p>评论asdffafsdfdsf</p>
-									<span>View all posts by :<a href="#"> Admin </a></span>
-								</div>
-							</div>
-							<div class="media">
-								<h5>用户B</h5>
-								<div class="media-left">
-									<a href="#">
-										
-									</a>
-								</div>
-								<div class="media-body">
-									<p>评论asdffafsdfdsf</p>
-									<span>View all posts by :<a href="#"> Admin </a></span>
-								</div>
-							</div>
-							<div class="media">
-								<h5>用户C</h5>
-								<div class="media-left">
-									<a href="#">
-										
-									</a>
-								</div>
-								<div class="media-body">
-									<p>评论asdffafsdfdsf</p>
-									<span>View all posts by :<a href="#"> Admin </a></span>
-								</div>
-							</div>
-							<div class="media">
-								<h5>用户D</h5>
-								<div class="media-left">
-									<a href="#">
-										
-									</a>
-								</div>
-								<div class="media-body">
-									<p>评论asdffafsdfdsf</p>
-									<span>View all posts by :<a href="#"> Admin </a></span>
-								</div>
-							</div>
-							<div class="media">
-								<h5>用户E</h5>
-								<div class="media-left">
-									<a href="#">
-										
-									</a>
-								</div>
-								<div class="media-body">
-									<p>评论asdffafsdfdsf</p>
-									<span>View all posts by :<a href="#"> Admin </a></span>
-								</div>
-							</div>
-							<div class="media">
-								<h5>用户F</h5>
-								<div class="media-left">
-									<a href="#">
-										
-									</a>
-								</div>
-								<div class="media-body">
-									<p>评论asdffafsdfdsf</p>
-									<span>View all posts by :<a href="#"> Admin </a></span>
-								</div>
-							</div>
-							<div class="media">
-								<h5>用户G</h5>
-								<div class="media-left">
-									<a href="#">
-										
-									</a>
-								</div>
-								<div class="media-body">
-									<p>评论asdffafsdfdsf</p>
-									<span>View all posts by :<a href="#"> Admin </a></span>
-								</div>
-							</div>
+						
+						<div class="all-comments-buttons">
+							<ul>
+								<li><a href="#" class="top">热评</a></li>
+								<li><a href="#" class="top newest">最新</a></li>
+								<li><a href="#" class="top my-comment">我的评论</a></li>
+							</ul>
+						</div>
+						
+						<div class="media">
+						<div class="media-grids" id="media-grids">
+							<ul id="pinglunlist">
+ 					        </ul>
 						</div>
 					</div>
 				</div>
 				
+			<script type="text/javascript">
+				$(document).ready(
+						function(){
+							$.ajax({
+						        type: 'post',  
+						        url: '/FaceYxc/com.yxc.servlet/CommentServlet',  
+						        data: {
+						      	'email':null,
+						      	'content':null,
+						      	'date':null,
+						        },
+						        async: false,
+						        success:function(data){
+						        	 if(data.length>0){
+						             	   for (var i = 0; i < data.length; i++) {
+						             		    //var pinglun = $("<li>用户ID：" + data[i].email + "； 评论内容：" + data[i].content + "； 评论时间：" + data[i].date + "</li>");
+						             		    var pinglun = $("<h5>" + data[i].email + "</h5> <div class=\"media-left\"></div><div class=\"media-body\"><div class=\"all-comments-buttons\"><span><B>" + data[i].content + "</B></span></div><span>time:" + data[i].date + "</span></div>");
+						             		    $("#media-grids").append(pinglun);
+						             	   }
+						        	 }
+						        }
+							});
+						}	
+					);
+				
+				    function sendCom() {
+								var content = document.getElementById("content").value;
+								var Email = "<%=email%>";
+								
+								if(Email == 'null' || content.length == 0) ;
+								else{
+									var myDate = new Date();
+									var date="";
+									var year = myDate.getFullYear();
+									var month = myDate.getMonth()+1;
+									var day = myDate.getDate();
+									var hour = myDate.getHours();
+									var minutes = myDate.getMinutes();
+									var seconds = myDate.getSeconds();
+									
+									if(month < 10)  month = "0"+month;
+									if(day < 10)  day = "0"+day;
+									if(hour < 10)  hour = "0"+hour;
+									if(minutes < 10)  minutes = "0"+minutes;
+									if(seconds < 10)  seconds = "0"+seconds;
+									
+									date += year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
+									
+									$.ajax({
+								        type: 'post',  
+								        url: '/FaceYxc/com.yxc.servlet/CommentServlet',  
+								        data: {
+								      	'email':Email,
+								      	'content':content,
+								      	'date':date,
+								        },
+									});
+									
+								}
+							}
+			</script>
 			
 		
 		</div>

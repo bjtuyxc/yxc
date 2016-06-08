@@ -33,7 +33,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
  <script>
    videojs.options.flash.swf = "video-js/video-js.swf";
  </script>
- 
+
 
 
 

@@ -58,7 +58,7 @@ public class CameraServlet extends HttpServlet {
 	String img1=img.substring(22);
 	
 	byte [] b = decode.decodeBuffer(img1);
-	System.out.println("接收到人脸");
+	//System.out.println("接收到人脸");
 //	String imgFilePath = "C:/Users/yxc/Desktop/test22.png";// 新生成的图片
 //	OutputStream out = new FileOutputStream(imgFilePath);
 //	out.write(b);
@@ -137,7 +137,6 @@ public class CameraServlet extends HttpServlet {
 	}
     response.setContentType("application/json");
     response.getWriter().write(jsonArray.toString());
-    
 //	for(int i=0;i<faces.size();i++){
 //		System.out.println("年龄："+faces.get(i).getAge());
 //		System.out.println("性别："+faces.get(i).getGender());

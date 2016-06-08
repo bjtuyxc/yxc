@@ -23,7 +23,8 @@ public class AnalyzeDao {
 
 	public static void  main(String[] args) throws Exception {
 //	System.out.println(AnalyzeDao.fenci("陪伴是最长情的告白 这句话就应该由E神唱出来。"));
-	System.out.println(AnalyzeDao.readDoc(AnalyzeDao.fenci("不得不说，真的非常精彩的一部剧，好好看的故事！平淡但却精彩，好久没看到这样的剧了，精彩精彩，里面每个人都好喜欢，看的非常顺眼，期待我家艺兴出场。")));
+	System.out.println(AnalyzeDao.readDoc
+	  (AnalyzeDao.fenci("不得不说，真的非常精彩的一部剧，好好看的故事！平淡但却精彩，好久没看到这样的剧了，精彩精彩，里面每个人都好喜欢，看的非常顺眼，期待我家艺兴出场。")));
 	//CommentDao.setPoint();
 //	 CheckInfoDao.getSong("陈奕迅");
 		//CommentDao.aver();

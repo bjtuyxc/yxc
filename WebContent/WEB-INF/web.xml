@@ -20,7 +20,7 @@
     <servlet-name>CameraServlet</servlet-name>
     <url-pattern>/camera</url-pattern>
   </servlet-mapping>
-   <servlet>
+  <servlet>
     <display-name>AgeServlet</display-name>
     <servlet-name>AgeServlet</servlet-name>
     <servlet-class>
@@ -107,5 +107,39 @@
   <servlet-mapping>
     <servlet-name>SmilesServlet</servlet-name>
     <url-pattern>/smile</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <display-name>LoginServlet</display-name>
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>
+        com.yxc.servlet.LoginServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/com.yxc.servlet/LoginServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <display-name>RegisterServlet</display-name>
+    <servlet-name>RegisterServlet</servlet-name>
+    <servlet-class>
+        com.yxc.servlet.RegisterServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RegisterServlet</servlet-name>
+    <url-pattern>/com.yxc.servlet/RegisterServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <display-name>CommentServlet</display-name>
+    <servlet-name>CommentServlet</servlet-name>
+    <servlet-class>
+        com.yxc.servlet.CommentServlet
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CommentServlet</servlet-name>
+    <url-pattern>/com.yxc.servlet/CommentServlet</url-pattern>
   </servlet-mapping>
 </web-app>

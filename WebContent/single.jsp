@@ -58,7 +58,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="index.html"><h1><img src="images/logo.png" alt="" /></h1></a>
+          <a class="navbar-brand" href="index.jsp"><h1><img src="images/logo.png" alt="" /></h1></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
 			<div class="top-search">
@@ -338,7 +338,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			</div>
 				<div class="drop-navigation drop-navigation">
 				  <ul class="nav nav-sidebar">
-					<li><a href="index.html" class="home-icon"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页</a></li>
+					<li><a href="index.jsp" class="home-icon"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>首页</a></li>
 					<li><a href="shows.html" class="user-icon"><span class="glyphicon glyphicon-home glyphicon-blackboard" aria-hidden="true"></span>电视节目</a></li>
 					<li><a href="history.html" class="sub-icon"><span class="glyphicon glyphicon-home glyphicon-hourglass" aria-hidden="true"></span>历史</a></li>
 					<li><a href="#" class="menu1"><span class="glyphicon glyphicon-film" aria-hidden="true"></span>影片<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></li>
@@ -575,7 +575,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		videoObj = { "video": true},
 		errBack = function(error) {
 			console.log("视频获取失败: ", error.code); 
-			alert("失败");
 		};
 
 	//获取摄像头的方式

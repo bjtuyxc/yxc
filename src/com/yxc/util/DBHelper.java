@@ -1,4 +1,4 @@
-package com.yxc.model;
+package com.yxc.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

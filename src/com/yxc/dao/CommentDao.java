@@ -23,7 +23,7 @@ public class CommentDao {
 	public int insert(Comment comm){
 		
 		System.out.println("插入的时间是："+comm.getTime());
-		String sql = "insert into comment values('"+comm.getEmail()+"','"+comm.getvedioID()+"','"+comm.getTime()+"','"+comm.getContent()+"')";
+		String sql = "insert into comment(email,vedioid,time,content) values('"+comm.getEmail()+"','"+comm.getvedioID()+"','"+comm.getTime()+"','"+comm.getContent()+"')";
 		try {
 			stmt = conn.createStatement();
 			if(stmt.execute(sql))  return 1;
